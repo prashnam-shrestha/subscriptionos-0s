@@ -7,10 +7,139 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  ADMIN
+  STAFF
+}
+
 model User {
   id           String   @id @default(uuid())
   email        String   @unique
   passwordHash String
   name         String
+  role         Role     @default(ADMIN)
   createdAt    DateTime @default(now())
+}
+
+model Customer {
+  tickets       Ticket[]
+  id            String         @id @default(uuid())
+  fullName      String
+  phone         String         @unique
+  notes         String?
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  subscriptions Subscription[]
+}
+
+model Product {
+  id            String         @id @default(uuid())
+  name          String
+  category      String
+  price         Float
+  durationDays  Int
+  isActive      Boolean        @default(true)
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now()) @updatedAt
+  subscriptions Subscription[]
+}
+
+model MasterAccount {
+  tickets           Ticket[]
+  id                String    @id @default(uuid())
+  nickname          String
+  category          String
+  loginEmail        String
+  encryptedPassword String
+  isActive          Boolean   @default(true)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @default(now()) @updatedAt
+  profiles          Profile[]
+}
+
+model Profile {
+  id              String         @id @default(uuid())
+  masterAccountId String
+  masterAccount   MasterAccount  @relation(fields: [masterAccountId], references: [id], onDelete: Cascade)
+  profileName     String
+  encryptedPin    String
+  capacity        Int
+  isActive        Boolean        @default(true)
+  needsRenotify   Boolean        @default(false)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @default(now()) @updatedAt
+  subscriptions   Subscription[]
+}
+
+model Subscription {
+  tickets    Ticket[]
+  id         String       @id @default(uuid())
+  customerId String
+  customer   Customer     @relation(fields: [customerId], references: [id])
+  productId  String
+  product    Product      @relation(fields: [productId], references: [id])
+  profileId  String
+  profile    Profile      @relation(fields: [profileId], references: [id])
+  startDate  DateTime     @default(now())
+  expiryDate DateTime
+  amountPaid Float
+  status     String       @default("Active")
+  createdAt  DateTime     @default(now())
+  renewals   RenewalLog[]
+}
+
+model RenewalLog {
+  id                 String       @id @default(uuid())
+  subscriptionId     String
+  subscription       Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  previousExpiryDate DateTime
+  newExpiryDate      DateTime
+  amountPaid         Float
+  renewedAt          DateTime     @default(now())
+}
+
+model Ticket {
+  id              String        @id @default(cuid())
+  masterAccountId String
+  masterAccount   MasterAccount @relation(fields: [masterAccountId], references: [id], onDelete: Cascade)
+  subscriptionId  String?
+  subscription    Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  customerId      String?
+  customer        Customer?     @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  issue           String
+  status          String        @default("Open")
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([masterAccountId])
+  @@index([createdAt])
+}
+
+enum TaskType {
+  NOTIFY_NEW_SUBSCRIPTION
+  NOTIFY_PIN_CHANGE
+  PHYSICAL_STREAMING_PIN_CHANGE
+  PHYSICAL_PROFILE_CREATION
+  NOTIFY_CREDENTIAL_CHANGE
+  NOTIFY_MIGRATION
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
+
+model Task {
+  id              String     @id @default(uuid())
+  type            TaskType
+  status          TaskStatus @default(PENDING)
+  title           String
+  description     String
+  relatedEntityId String?
+  metadata        String
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  completedAt     DateTime?
 }
