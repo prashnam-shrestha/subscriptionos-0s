@@ -18,12 +18,12 @@ export default async function NewSubscriptionPage({
     notFound();
   }
 
-  const activeProducts = await prisma.product.findMany({
+  const [activeProducts, rawProfiles] = await Promise.all([
+  prisma.product.findMany({
     where: { isActive: true },
     orderBy: { name: "asc" },
-  });
-
-  const rawProfiles = await prisma.profile.findMany({
+  }),
+  prisma.profile.findMany({
     where: { isActive: true },
     include: {
       masterAccount: {
@@ -35,7 +35,8 @@ export default async function NewSubscriptionPage({
       },
     },
     orderBy: { profileName: "asc" },
-  });
+  })
+]);
 
   const profiles = rawProfiles.map((p) => ({
     id: p.id,

@@ -30,7 +30,8 @@ export default async function CustomerDetailPage({
     notFound();
   }
 
-  const renewalLogs = await prisma.renewalLog.findMany({
+  const [renewalLogs, allActiveProfiles] = await Promise.all([
+  prisma.renewalLog.findMany({
     where: {
       subscription: { customerId: id },
     },
@@ -40,9 +41,8 @@ export default async function CustomerDetailPage({
         include: { product: true },
       },
     },
-  });
-
-  const allActiveProfiles = await prisma.profile.findMany({
+  }),
+  prisma.profile.findMany({
     where: {
       isActive: true,
       masterAccount: { isActive: true },
@@ -51,7 +51,8 @@ export default async function CustomerDetailPage({
       masterAccount: true,
       subscriptions: { where: { status: "Active" } },
     },
-  });
+  })
+]);
 
   const eligibleProfilesByCategory: Record<
     string,
