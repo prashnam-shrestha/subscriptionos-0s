@@ -16,7 +16,7 @@ import {
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
 import { GlobalSearch } from "@/components/global-search";
-import { Search, TrendingUp, Users, Wallet, Layers, AlertTriangle } from "lucide-react";
+import {  Search, TrendingUp, Users, Wallet, Layers, AlertTriangle , X } from "lucide-react";
 
 type DashboardProps = {
   metrics: {
@@ -89,7 +89,8 @@ export default function DashboardView({
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_50%)]" />
           <div className="relative space-y-4">
             <div className="flex items-center justify-between gap-4">
-              <div>
+              <button type="button" onClick={() => setSearchOpen(false)} className="absolute right-3 top-3 p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors z-50" title="Close"><X className="h-5 w-5" /></button>
+<div>
                 <h1 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
                   Operational Dashboard
                 </h1>
