@@ -21,9 +21,9 @@ export async function globalSearchAction(query: string): Promise<SearchResultIte
       where: {
         AND: tokens.map((token) => ({
           OR: [
-            { fullName: { contains: token } },
-            { phone: { contains: token } },
-            { notes: { contains: token } },
+            { fullName: { contains: token, mode: "insensitive" } },
+            { phone: { contains: token, mode: "insensitive" } },
+            { notes: { contains: token, mode: "insensitive" } },
           ],
         })),
       },
@@ -33,8 +33,8 @@ export async function globalSearchAction(query: string): Promise<SearchResultIte
       where: {
         AND: tokens.map((token) => ({
           OR: [
-            { name: { contains: token } },
-            { category: { contains: token } },
+            { name: { contains: token, mode: "insensitive" } },
+            { category: { contains: token, mode: "insensitive" } },
           ],
         })),
       },
@@ -44,9 +44,9 @@ export async function globalSearchAction(query: string): Promise<SearchResultIte
       where: {
         AND: tokens.map((token) => ({
           OR: [
-            { nickname: { contains: token } },
-            { loginEmail: { contains: token } },
-            { category: { contains: token } },
+            { nickname: { contains: token, mode: "insensitive" } },
+            { loginEmail: { contains: token, mode: "insensitive" } },
+            { category: { contains: token, mode: "insensitive" } },
           ],
         })),
       },
@@ -56,10 +56,10 @@ export async function globalSearchAction(query: string): Promise<SearchResultIte
       where: {
         AND: tokens.map((token) => ({
           OR: [
-            { customer: { fullName: { contains: token } } },
-            { customer: { phone: { contains: token } } },
-            { product: { name: { contains: token } } },
-            { status: { contains: token } },
+            { customer: { fullName: { contains: token, mode: "insensitive" } } },
+            { customer: { phone: { contains: token, mode: "insensitive" } } },
+            { product: { name: { contains: token, mode: "insensitive" } } },
+            { status: { contains: token, mode: "insensitive" } },
           ],
         })),
       },

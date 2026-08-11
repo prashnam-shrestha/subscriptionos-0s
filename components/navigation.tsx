@@ -1,5 +1,15 @@
 "use client";
 
+import {
+  Search,
+  LayoutDashboard,
+  CheckSquare,
+  Users,
+  Repeat,
+  Shield,
+  Package,
+  TrendingUp
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -8,13 +18,13 @@ import { ThemeToggle } from "./theme-toggle";
 import { GlobalSearch } from "./global-search";
 
 const NAV_ITEMS = [
-  { label: "Dashboard", href: "/" },
-  { label: "Tasks", href: "/tasks" },
-  { label: "Customers", href: "/customers" },
-  { label: "Subscriptions", href: "/subscriptions" },
-  { label: "Master Accounts", href: "/accounts" },
-  { label: "Products", href: "/products" },
-  { label: "Revenue", href: "/analytics" },
+  { label: "Dashboard", shortLabel: "Dash", href: "/", icon: LayoutDashboard },
+  { label: "Tasks", shortLabel: "Tasks", href: "/tasks", icon: CheckSquare },
+  { label: "Customers", shortLabel: "Customers", href: "/customers", icon: Users },
+  { label: "Subscriptions", shortLabel: "Subs", href: "/subscriptions", icon: Repeat },
+  { label: "Master Accounts", shortLabel: "Accounts", href: "/accounts", icon: Shield },
+  { label: "Products", shortLabel: "Products", href: "/products", icon: Package },
+  { label: "Revenue", shortLabel: "Revenue", href: "/analytics", icon: TrendingUp },
 ];
 
 export function Navigation({ pendingTasksCount = 0 }: { pendingTasksCount?: number }) {
@@ -57,28 +67,28 @@ export function Navigation({ pendingTasksCount = 0 }: { pendingTasksCount?: numb
                     ? pathname === "/"
                     : pathname.startsWith(item.href);
 
-                  const isTasksTab = item.label === "Tasks";
-                  const showCount = isTasksTab && pendingTasksCount > 0;
-                  const label = showCount ? `Tasks (${pendingTasksCount})` : item.label;
+                const isTasksTab = item.label === "Tasks";
+                const showCount = isTasksTab && pendingTasksCount > 0;
+                const label = showCount ? `Tasks (${pendingTasksCount})` : item.label;
 
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                        isActive
-                          ? showCount
-                            ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
-                            : "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
-                          : showCount
-                            ? "text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/30"
-                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
-                      }`}
-                    >
-                      {label}
-                    </Link>
-                  );
-                })}
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                      isActive
+                        ? showCount
+                          ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/50 dark:text-yellow-300"
+                          : "bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900"
+                        : showCount
+                          ? "text-yellow-600 hover:bg-yellow-50 dark:text-yellow-400 dark:hover:bg-yellow-900/30"
+                          : "text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-100"
+                    }`}
+                  >
+                    {label}
+                  </Link>
+                );
+              })}
             </nav>
           </div>
 
@@ -87,9 +97,7 @@ export function Navigation({ pendingTasksCount = 0 }: { pendingTasksCount?: numb
               onClick={() => setSearchOpen(true)}
               className="flex items-center gap-2 rounded-md border border-slate-200 bg-slate-50 px-2.5 sm:px-3 py-1.5 text-xs text-slate-500 hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 transition-colors"
             >
-              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 0 0114 0z" />
-              </svg>
+              <Search className="h-3.5 w-3.5 shrink-0" />
               <span className="hidden sm:inline">Search...</span>
               <kbd className="hidden sm:inline-block rounded border border-slate-200 bg-white px-1.5 py-0.5 text-[10px] font-semibold text-slate-400 dark:border-slate-700 dark:bg-slate-800">
                 ⌘K
@@ -167,6 +175,42 @@ export function Navigation({ pendingTasksCount = 0 }: { pendingTasksCount?: numb
           </nav>
         )}
       </header>
+
+      {/* Fixed Instagram-style Bottom Navigation Bar (Visible on Narrow/Minimized Screens) */}
+      <nav className="fixed bottom-0 inset-x-0 z-40 flex items-center justify-between border-t border-slate-200 bg-white/95 px-1 py-1.5 backdrop-blur dark:border-slate-800 dark:bg-slate-950/95 md:hidden">
+        {NAV_ITEMS.map((item) => {
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
+
+          const isTasksTab = item.label === "Tasks";
+          const showCount = isTasksTab && pendingTasksCount > 0;
+          const Icon = item.icon;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`relative flex flex-col items-center justify-center flex-1 py-1 px-0.5 text-[10px] font-medium transition-colors rounded-lg ${
+                isActive
+                  ? "text-slate-900 dark:text-white font-semibold"
+                  : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              <div className="relative">
+                <Icon className="h-5 w-5" />
+                {showCount && (
+                  <span className="absolute -top-1 -right-2 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-yellow-500 text-[8px] font-bold text-slate-950">
+                    {pendingTasksCount}
+                  </span>
+                )}
+              </div>
+              <span className="mt-0.5 truncate max-w-full text-[9px]">{item.shortLabel}</span>
+            </Link>
+          );
+        })}
+      </nav>
 
       <GlobalSearch isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
     </>

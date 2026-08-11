@@ -1,4 +1,5 @@
 "use client";
+import { Search } from "lucide-react";
 
 import { useState, useEffect, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -49,9 +50,7 @@ export function GlobalSearch({
   return (
     <CommandDialog isOpen={isOpen} onClose={onClose}>
       <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center gap-3">
-        <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 0 0114 0z" />
-        </svg>
+        <Search className="h-4 w-4 shrink-0 text-slate-400" />
         <input
           type="text"
           value={query}
